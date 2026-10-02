@@ -1,0 +1,160 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1.0">
+<title>Química Quest — Missão Laboratório</title>
+<style>
+:root{--bg:#050b14;--panel:#0d1829;--line:#294461;--text:#edf7ff;--muted:#9fb5cb;--cyan:#5ce7d4;--purple:#9b8cff;--green:#62e58c;--red:#ff6878;--yellow:#ffd166}
+*{box-sizing:border-box}body{margin:0;color:var(--text);font-family:Arial,Segoe UI,sans-serif;background:radial-gradient(circle at 15% 10%,#17405d 0,transparent 28%),radial-gradient(circle at 90% 20%,#30245c 0,transparent 28%),var(--bg);min-height:100vh}
+header{position:sticky;top:0;z-index:10;background:#050b14e8;backdrop-filter:blur(12px);border-bottom:1px solid var(--line);padding:18px 5%;display:flex;justify-content:space-between;align-items:center}.logo{font-weight:900;font-size:20px}.logo span{color:var(--cyan)}
+nav{display:flex;gap:7px;flex-wrap:wrap}.nav,.secondary{background:#102039;border:1px solid var(--line);color:var(--text);padding:10px 14px;border-radius:11px;cursor:pointer;font-weight:700}.nav:hover,.secondary:hover{border-color:var(--cyan)}
+main{max-width:1150px;margin:auto;padding:35px 5% 70px}.hero{min-height:75vh;display:grid;grid-template-columns:1.2fr .8fr;align-items:center;gap:35px}.badge{display:inline-block;border:1px solid var(--cyan);color:var(--cyan);padding:7px 11px;border-radius:99px;font-size:12px;font-weight:bold}
+h1{font-size:clamp(42px,7vw,76px);line-height:.95;margin:18px 0}h1 span{color:var(--cyan)}.lead{font-size:18px;color:var(--muted);line-height:1.6;max-width:650px}
+.primary{background:var(--cyan);color:#06131c;border:0;padding:14px 20px;border-radius:13px;font-weight:900;cursor:pointer}.hero-buttons{display:flex;gap:10px;flex-wrap:wrap;margin-top:25px}
+.lab{background:linear-gradient(145deg,#12253c,#091321);border:1px solid var(--line);border-radius:28px;padding:30px;box-shadow:0 25px 70px #0007;text-align:center}.lab-icon{font-size:100px;animation:float 3s ease-in-out infinite}@keyframes float{50%{transform:translateY(-10px) rotate(2deg)}}
+section{margin-top:65px}.title{font-size:32px;margin-bottom:7px}.sub{color:var(--muted);margin-bottom:22px}.cards,.rules{display:grid;grid-template-columns:repeat(4,1fr);gap:14px}.card{background:#0d1a2c;border:1px solid var(--line);border-radius:20px;padding:20px}.card .emoji{font-size:35px}.card h3{margin:10px 0 6px}.card p{color:var(--muted);font-size:14px;line-height:1.5}
+.mission{background:linear-gradient(145deg,#101f34,#0b1524);border:1px solid var(--line);border-radius:25px;padding:25px}.phases{display:grid;grid-template-columns:repeat(3,1fr);gap:12px}.phase{padding:18px;border:1px solid var(--line);border-radius:17px;background:#0b1727}.phase b{color:var(--cyan)}
+.game{display:grid;grid-template-columns:230px 1fr;gap:16px}.side{display:flex;flex-direction:column;gap:12px}.stat{background:#0d1a2c;border:1px solid var(--line);border-radius:18px;padding:17px}.stat-label{font-size:11px;color:var(--muted);font-weight:bold}.stat-value{font-size:27px;font-weight:900;margin-top:5px}.arena{background:#0d1a2c;border:1px solid var(--line);border-radius:22px;padding:25px}
+.progress{height:9px;background:#07101b;border-radius:99px;overflow:hidden;margin-bottom:22px}.progress div{height:100%;background:linear-gradient(90deg,var(--cyan),var(--purple));transition:.4s}.question{font-size:25px;line-height:1.35;margin:12px 0 22px}.options{display:grid;grid-template-columns:1fr 1fr;gap:12px}.option{padding:17px;border:1px solid var(--line);border-radius:14px;background:#091525;color:var(--text);cursor:pointer;text-align:left;font-weight:bold}.option:hover{border-color:var(--cyan);transform:translateY(-2px)}.correct{border-color:var(--green)!important;background:#62e58c16!important}.wrong{border-color:var(--red)!important;background:#ff687816!important}.feedback{min-height:30px;margin:18px 0;font-weight:bold}.hidden{display:none}.end{text-align:center;padding:25px}.xp{font-size:48px;color:var(--yellow);font-weight:900}
+footer{text-align:center;border-top:1px solid var(--line);padding:25px;color:#70869d}
+
+/* EFEITOS */
+#effectsLayer{position:fixed;inset:0;pointer-events:none;z-index:9999;overflow:hidden}
+.smoke-puff{position:absolute;width:80px;height:80px;border-radius:50%;background:radial-gradient(circle,#e3eaedaa 0%,#aeb9bf55 43%,transparent 73%);filter:blur(7px);animation:smokeRise 1.8s ease-out forwards}
+@keyframes smokeRise{0%{transform:translate(-50%,-20%) scale(.3);opacity:0}15%{opacity:.72}100%{transform:translate(-50%,-170%) scale(2.2);opacity:0}}
+.reaction-flash{position:fixed;inset:0;background:#d9f5ff2b;animation:flash .28s ease-out forwards}@keyframes flash{0%{opacity:0}25%{opacity:1}100%{opacity:0}}
+.explosion{position:fixed;left:50%;top:50%;width:80px;height:80px;border-radius:50%;transform:translate(-50%,-50%);background:radial-gradient(circle,#fff 0%,#ffe59a 12%,#ff9d43 28%,#ff4f38 48%,transparent 70%);box-shadow:0 0 80px 35px #ff8b45aa;animation:explode .75s ease-out forwards}
+@keyframes explode{0%{opacity:0;transform:translate(-50%,-50%) scale(.1)}20%{opacity:1}100%{opacity:0;transform:translate(-50%,-50%) scale(9)}}
+.explosion-ring{position:fixed;left:50%;top:50%;width:60px;height:60px;border:8px solid #ffd166;border-radius:50%;transform:translate(-50%,-50%);animation:ring .9s ease-out forwards}
+@keyframes ring{0%{opacity:1;transform:translate(-50%,-50%) scale(.1)}100%{opacity:0;transform:translate(-50%,-50%) scale(10)}}
+.spark{position:absolute;width:7px;height:20px;border-radius:99px;background:#ffd166;left:50%;top:50%;transform-origin:50% 140px;animation:sparkFly .8s ease-out forwards}
+@keyframes sparkFly{0%{opacity:1;transform:rotate(var(--angle)) translateY(15px) scale(1)}100%{opacity:0;transform:rotate(var(--angle)) translateY(360px) scale(.15)}}
+.screen-shake{animation:screenShake .55s cubic-bezier(.36,.07,.19,.97) both}
+@keyframes screenShake{0%,100%{transform:translate3d(0,0,0)}10%,30%,50%,70%,90%{transform:translate3d(-9px,4px,0)}20%,40%,60%,80%{transform:translate3d(10px,-4px,0)}}
+
+@media(max-width:850px){.hero,.game{grid-template-columns:1fr}.cards,.rules{grid-template-columns:1fr 1fr}}
+@media(max-width:560px){.cards,.phases,.rules,.options{grid-template-columns:1fr}header{gap:12px;align-items:flex-start;flex-direction:column}.question{font-size:21px}}
+</style>
+</head>
+<body>
+<div id="effectsLayer"></div>
+<header><div class="logo">⚗️ QUÍMICA <span>QUEST</span></div><nav>
+<button class="nav" onclick="go('inicio')">Início</button><button class="nav" onclick="go('conteudo')">Conteúdo</button><button class="nav" onclick="go('jogo')">Jogar</button>
+</nav></header>
+
+<main>
+<section id="inicio" class="hero"><div>
+<span class="badge">MISSÃO • LABORATÓRIO QUÍMICO</span>
+<h1>Recupere o <span>Laboratório.</span></h1>
+<p class="lead">Uma contaminação desconhecida tomou conta do laboratório. Identifique substâncias, resolva reações e complete o desafio final para recuperar o sistema.</p>
+<div class="hero-buttons"><button class="primary" onclick="startGame()">🧪 Iniciar missão</button><button class="secondary" onclick="go('conteudo')">📚 Estudar primeiro</button></div>
+</div><div class="lab"><div class="lab-icon">🧪</div><h2>OPERAÇÃO: QUÍMICA</h2><p class="lead" style="font-size:14px">Ácidos • Bases • Sais • Óxidos</p><p>⚡ 3 fases • ❤️ 3 vidas • 🏆 até 2.200 XP</p></div></section>
+
+<section id="conteudo"><h2 class="title">📚 Base de conhecimento</h2><p class="sub">Use este guia para estudar antes de começar.</p><div class="cards">
+<div class="card"><div class="emoji">🍋</div><h3>Ácidos</h3><p>Em solução aquosa, aumentam a concentração de H⁺. Exemplos: HCl e H₂SO₄.</p></div>
+<div class="card"><div class="emoji">🧼</div><h3>Bases</h3><p>Em solução aquosa, estão associadas à formação de OH⁻. Exemplos: NaOH e Ca(OH)₂.</p></div>
+<div class="card"><div class="emoji">🧂</div><h3>Sais</h3><p>Compostos iônicos que podem ser formados em reações como a neutralização. Exemplos: NaCl e KBr.</p></div>
+<div class="card"><div class="emoji">🌫️</div><h3>Óxidos</h3><p>Compostos binários nos quais o oxigênio está ligado a outro elemento. Exemplos: CO₂ e CaO.</p></div>
+</div></section>
+
+<section><div class="mission"><h2 class="title">🎯 As 3 fases</h2><div class="phases">
+<div class="phase"><b>FASE 1 — 🔬 IDENTIFICAÇÃO</b><p>Classifique fórmulas como ácido, base, sal ou óxido.</p></div>
+<div class="phase"><b>FASE 2 — ⚗️ REAÇÕES</b><p>Descubra produtos de reações químicas simples.</p></div>
+<div class="phase"><b>FASE 3 — ☢️ DESAFIO FINAL</b><p>Questões misturando os quatro conteúdos.</p></div>
+</div></div></section>
+
+<section id="jogo"><h2 class="title">🎮 Central da missão</h2><p class="sub">Complete as fases e acumule XP.</p><div class="game">
+<div class="side"><div class="stat"><div class="stat-label">FASE</div><div id="phase" class="stat-value">—</div></div>
+<div class="stat"><div class="stat-label">XP</div><div id="xp" class="stat-value">0</div></div>
+<div class="stat"><div class="stat-label">VIDAS</div><div id="lives" class="stat-value">❤️❤️❤️</div></div>
+<div class="stat"><div class="stat-label">QUESTÃO</div><div id="counter" class="stat-value">—</div></div>
+<button class="secondary" onclick="restart()">🔄 Reiniciar</button></div>
+<div class="arena"><div class="progress"><div id="progress"></div></div><div id="gameContent"><div class="end"><div style="font-size:70px">🔒</div><h2>Missão não iniciada</h2><p class="sub">Clique em "Iniciar missão" para começar.</p><button class="primary" onclick="startGame()">COMEÇAR</button></div></div></div>
+</div></section>
+
+<section><h2 class="title">📜 Regras</h2><div class="rules">
+<div class="card"><b>1. Analise</b><p>Leia a pergunta e pense na classificação ou reação.</p></div>
+<div class="card"><b>2. Responda</b><p>Escolha uma alternativa. Cada acerto rende XP.</p></div>
+<div class="card"><b>3. Complete</b><p>Você tem 3 vidas. Ao perder uma vida, o laboratório reage. Ao perder as três, ocorre uma explosão!</p></div>
+</div></section>
+</main>
+
+<footer>Química Quest • Projeto de Química • Integrantes: <b>Gustavo T.</b> • <b>Gustavo H.</b> • <b>Giancarlo</b></footer>
+
+<script>
+const phases=[
+{name:"FASE 1 — IDENTIFICAÇÃO",questions:[
+["HCl é classificado como:",["Ácido","Base","Sal","Óxido"],0,"HCl é um ácido."],
+["NaOH é classificado como:",["Ácido","Base","Sal","Óxido"],1,"NaOH é uma base."],
+["NaCl é classificado como:",["Ácido","Base","Sal","Óxido"],2,"NaCl é um sal."],
+["CO₂ é classificado como:",["Ácido","Base","Sal","Óxido"],3,"CO₂ é um óxido."],
+["Ca(OH)₂ pertence a qual classe?",["Ácido","Base","Sal","Óxido"],1,"Ca(OH)₂ é uma base."]
+]},
+{name:"FASE 2 — REAÇÕES",questions:[
+["HCl + NaOH → ?",["NaCl + H₂O","CO₂ + H₂","O₂ + Na","HCl + Na"],0,"É uma reação de neutralização: sal + água."],
+["Ácido + base pode produzir:",["Sal + água","Somente oxigênio","Somente ácido","Somente base"],0,"Na neutralização, podem ser formados sal e água."],
+["H₂SO₄ + 2NaOH → ?",["Na₂SO₄ + 2H₂O","NaCl + H₂O","CO₂ + H₂","CaO + H₂O"],0,"Forma sulfato de sódio e água."]
+]},
+{name:"FASE 3 — DESAFIO FINAL",questions:[
+["Qual fórmula representa uma base?",["HNO₃","KOH","CO₂","NaCl"],1,"KOH é uma base."],
+["Qual fórmula representa um óxido?",["HCl","NaOH","SO₂","KBr"],2,"SO₂ é um óxido."],
+["Qual fórmula representa um sal?",["H₂CO₃","Mg(OH)₂","CaO","KBr"],3,"KBr é um sal."],
+["Qual alternativa apresenta somente exemplos de ácidos?",["HCl e H₂SO₄","NaOH e KOH","NaCl e KBr","CO₂ e CaO"],0,"HCl e H₂SO₄ são ácidos."]
+]}];
+
+let p=0,q=0,xp=0,lives=3,total=0,locked=false;
+function getAudio(){if(!window.audioCtx)window.audioCtx=new(window.AudioContext||window.webkitAudioContext)();if(audioCtx.state==="suspended")audioCtx.resume();return audioCtx}
+function noiseBurst(duration=.35,volume=.16,lowpass=1100){const c=getAudio(),b=c.createBuffer(1,c.sampleRate*duration,c.sampleRate),d=b.getChannelData(0);for(let i=0;i<d.length;i++)d[i]=(Math.random()*2-1)*(1-i/d.length);const s=c.createBufferSource(),f=c.createBiquadFilter(),g=c.createGain();f.type="lowpass";f.frequency.value=lowpass;g.gain.setValueAtTime(volume,c.currentTime);g.gain.exponentialRampToValueAtTime(.001,c.currentTime+duration);s.buffer=b;s.connect(f);f.connect(g);g.connect(c.destination);s.start()}
+function playSuccess(){
+ const c=getAudio();
+ const o=c.createOscillator(), g=c.createGain();
+ o.type="sine";
+ o.frequency.setValueAtTime(880,c.currentTime);
+ o.frequency.exponentialRampToValueAtTime(1320,c.currentTime+.16);
+ g.gain.setValueAtTime(.0001,c.currentTime);
+ g.gain.exponentialRampToValueAtTime(.16,c.currentTime+.025);
+ g.gain.exponentialRampToValueAtTime(.0001,c.currentTime+.28);
+ o.connect(g);g.connect(c.destination);o.start();o.stop(c.currentTime+.3);
+}
+function playTss(){const c=getAudio(),o=c.createOscillator(),g=c.createGain();o.type="sawtooth";o.frequency.setValueAtTime(1500,c.currentTime);o.frequency.exponentialRampToValueAtTime(500,c.currentTime+.32);g.gain.setValueAtTime(.0001,c.currentTime);g.gain.exponentialRampToValueAtTime(.12,c.currentTime+.025);g.gain.exponentialRampToValueAtTime(.0001,c.currentTime+.36);o.connect(g);g.connect(c.destination);o.start();o.stop(c.currentTime+.38);noiseBurst(.38,.1,2200)}
+function playExplosion(){const c=getAudio(),o=c.createOscillator(),g=c.createGain();o.type="sine";o.frequency.setValueAtTime(95,c.currentTime);o.frequency.exponentialRampToValueAtTime(35,c.currentTime+.65);g.gain.setValueAtTime(.0001,c.currentTime);g.gain.exponentialRampToValueAtTime(.55,c.currentTime+.025);g.gain.exponentialRampToValueAtTime(.0001,c.currentTime+.72);o.connect(g);g.connect(c.destination);o.start();o.stop(c.currentTime+.75);noiseBurst(.75,.42,900)}
+function smokeEffect(big=false){const layer=document.getElementById("effectsLayer"),count=big?30:7;for(let i=0;i<count;i++){const s=document.createElement("div");s.className="smoke-puff";const size=(big?55:45)+Math.random()*(big?100:60);s.style.width=size+"px";s.style.height=size+"px";s.style.left=(50+(Math.random()*26-13))+"%";s.style.top=(big?58:70)+(Math.random()*16-8)+"%";s.style.animationDelay=Math.random()*.22+"s";layer.appendChild(s);setTimeout(()=>s.remove(),2100)}}
+function reactionFlash(){const f=document.createElement("div");f.className="reaction-flash";document.getElementById("effectsLayer").appendChild(f);setTimeout(()=>f.remove(),350)}
+function explosionEffect(){
+ const layer=document.getElementById("effectsLayer");
+ document.body.classList.add("screen-shake");
+ setTimeout(()=>document.body.classList.remove("screen-shake"),650);
+ const e=document.createElement("div");e.className="explosion";layer.appendChild(e);
+ const r=document.createElement("div");r.className="explosion-ring";layer.appendChild(r);
+ for(let i=0;i<42;i++){
+   const s=document.createElement("div");s.className="spark";
+   s.style.setProperty("--angle",i*(360/42)+"deg");
+   s.style.height=(12+Math.random()*28)+"px";
+   s.style.width=(4+Math.random()*7)+"px";
+   layer.appendChild(s);setTimeout(()=>s.remove(),1100);
+ }
+ smokeEffect(true);
+ setTimeout(()=>{e.remove();r.remove()},1200);
+}
+function lifeLostEffect(){reactionFlash();smokeEffect(false);playTss()}
+function totalQ(){return phases.reduce((s,x)=>s+x.questions.length,0)}
+function startGame(){p=0;q=0;xp=0;lives=3;total=0;go("jogo");render()}
+function restart(){startGame()}
+function render(){
+if(lives<=0){gameOver();return}if(p>=phases.length){finish();return}
+const data=phases[p],item=data.questions[q];document.getElementById("phase").textContent=p+1+"/3";document.getElementById("xp").textContent=xp;document.getElementById("lives").textContent="❤️".repeat(lives)+"🖤".repeat(3-lives);document.getElementById("counter").textContent=(total+1)+"/"+totalQ();document.getElementById("progress").style.width=total/totalQ()*100+"%";
+document.getElementById("gameContent").innerHTML=`<div class="badge">${data.name}</div><div class="question">${item[0]}</div><div class="options" id="options"></div><div id="feedback" class="feedback"></div><button id="next" class="primary hidden" onclick="next()">Continuar →</button>`;
+const box=document.getElementById("options");item[1].forEach((text,i)=>{const b=document.createElement("button");b.className="option";b.textContent=text;b.onclick=()=>answer(i);box.appendChild(b)});locked=false}
+function answer(i){
+if(locked)return;locked=true;const item=phases[p].questions[q],opts=document.querySelectorAll(".option");opts.forEach((b,n)=>{if(n===item[2])b.classList.add("correct");if(n===i&&i!==item[2])b.classList.add("wrong")});
+const fb=document.getElementById("feedback");
+if(i===item[2]){xp+=200;fb.innerHTML="✅ CORRETO! +200 XP<br><span class='sub'>"+item[3]+"</span>";fb.style.color="var(--green)";playSuccess()}else{lives--;fb.innerHTML="❌ RESPOSTA INCORRETA<br><span class='sub'>"+item[3]+"</span>";fb.style.color="var(--red)";if(lives>0)lifeLostEffect();else{reactionFlash();explosionEffect();playExplosion()}}
+document.getElementById("xp").textContent=xp;document.getElementById("lives").textContent="❤️".repeat(lives)+"🖤".repeat(3-lives);document.getElementById("next").classList.remove("hidden");if(lives<=0)document.getElementById("next").textContent="Ver resultado"}
+function next(){total++;q++;if(q>=phases[p].questions.length){p++;q=0}render()}
+function gameOver(){document.getElementById("gameContent").innerHTML=`<div class="end"><div style="font-size:80px">💥</div><h2>LABORATÓRIO EM COLAPSO!</h2><p class="sub">As três vidas acabaram e a reação saiu do controle.</p><div class="xp">${xp} XP</div><button class="primary" onclick="startGame()">Tentar novamente</button></div>`}
+function finish(){document.getElementById("progress").style.width="100%";document.getElementById("gameContent").innerHTML=`<div class="end"><div style="font-size:80px">🏆</div><h2>LABORATÓRIO RECUPERADO!</h2><p class="sub">Você completou as três fases da missão.</p><div class="xp">${xp} XP</div><p>${xp>=1800?"🧠 Domínio excelente dos conceitos!":xp>=1200?"⚗️ Muito bom! Uma revisão pode aumentar sua pontuação.":"🔬 Continue estudando e tente novamente!"}</p><button class="primary" onclick="startGame()">Jogar novamente</button></div>`;document.getElementById("phase").textContent="✓";document.getElementById("counter").textContent=totalQ()+"/"+totalQ()}
+function go(id){document.getElementById(id).scrollIntoView({behavior:"smooth"})}
+</script>
+</body>
+</html>
